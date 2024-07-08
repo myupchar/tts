@@ -78,11 +78,11 @@ module Tts
   end
 
   def temp_file_name
-    @@temp_file ||= Tempfile.new.path
+    @@temp_file ||= Tempfile.new.path('test')
   end
 
   def play_file_name
-    @@play_file_file ||= Tempfile.new.path
+    @@play_file_file ||= Tempfile.new.path('test')
   end
 
   def merge_mp3_file file_name
