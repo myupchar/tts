@@ -2,7 +2,6 @@
 require 'open-uri'
 require 'uri'
 require 'tempfile'
-require 'cgi'
 
 module Tts
   @@default_url = "http://translate.google.com/translate_tts"
@@ -60,12 +59,12 @@ module Tts
   def to_url lang
     langs = ['af', 'ar', 'az', 'be', 'bg', 'bn', 'ca', 'cs', 'cy', 'da', 'de', 'el', 'en', 'en_us', 'en_gb', 'en_au', 'eo', 'es', 'et', 'eu', 'fa', 'fi', 'fr', 'ga', 'gl', 'gu', 'hi', 'hr', 'ht', 'hu', 'id', 'is', 'it', 'iw', 'ja', 'ka', 'kn', 'ko', 'la', 'lt', 'lv', 'mk', 'ms', 'mt', 'nl', 'no', 'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sq', 'sr', 'sv', 'sw', 'ta', 'te', 'th', 'tl', 'tr', 'uk', 'ur', 'vi', 'yi', 'zh', 'zh-CN', 'zh-TW']
     raise "Not accepted language, accpeted are #{langs * ","}" unless langs.include? lang
-    base = "#{Tts.server_url}?tl=#{lang}&ie=UTF-8&client=tw-ob&q=#{CGI.escape(self)}"
+    base = "#{Tts.server_url}?tl=#{lang}&ie=UTF-8&client=tw-ob&q=#{URI.escape self}"
   end
 
   def fetch_mp3 url, file_name
     begin
-      content = URI.open(url, "User-Agent" => @@user_agent, "Referer" => @@referer).read
+      content = open(url, "User-Agent" => @@user_agent, "Referer" => @@referer).read
 
       File.open(temp_file_name, "wb") do |f|
         f.puts content
@@ -78,11 +77,11 @@ module Tts
   end
 
   def temp_file_name
-    @@temp_file ||= Tempfile.new('test1.mp3').path
+    @@temp_file ||= Tempfile.new('test1').path
   end
 
   def play_file_name
-    @@play_file_file ||= Tempfile.new('test1.mp3').path
+    @@play_file_file ||= Tempfile.new('test1').path
   end
 
   def merge_mp3_file file_name
